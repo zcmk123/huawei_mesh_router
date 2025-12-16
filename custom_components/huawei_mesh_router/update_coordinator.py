@@ -955,9 +955,10 @@ class HuaweiDataUpdateCoordinator(DataUpdateCoordinator):
             devices: Iterable[HuaweiDeviceNode],
         ) -> Iterable[HuaweiDeviceNode]:
             for candidate in devices:
-                if candidate.hilink_type == NODE_HILINK_TYPE_DEVICE:
+                if getattr(candidate, 'hilink_type', None) == NODE_HILINK_TYPE_DEVICE or getattr(candidate, 'HiLinkType', None) == NODE_HILINK_TYPE_DEVICE:
                     yield candidate
-                for connected_router in get_mesh_routers(candidate.connected_devices):
+                connected_devices = getattr(candidate, "connected_devices", None) or getattr(candidate, "ConnectedDevices", None)
+                for connected_router in get_mesh_routers(connectedDevices):
                     yield connected_router
 
         mesh_routers = get_mesh_routers(devices_topology)
