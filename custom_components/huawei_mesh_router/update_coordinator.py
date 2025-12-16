@@ -958,7 +958,7 @@ class HuaweiDataUpdateCoordinator(DataUpdateCoordinator):
                 if getattr(candidate, 'hilink_type', None) == NODE_HILINK_TYPE_DEVICE or getattr(candidate, 'HiLinkType', None) == NODE_HILINK_TYPE_DEVICE:
                     yield candidate
                 connected_devices = getattr(candidate, "connected_devices", None) or getattr(candidate, "ConnectedDevices", None)
-                for connected_router in get_mesh_routers(connectedDevices):
+                for connected_router in get_mesh_routers(connected_devices):
                     yield connected_router
 
         mesh_routers = get_mesh_routers(devices_topology)
