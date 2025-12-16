@@ -163,9 +163,14 @@ class HuaweiControllerConfigFlow(ConfigFlow, domain=DOMAIN):
 class HuaweiControllerOptionsFlowHandler(OptionsFlow):
     """Handle options."""
 
+    @property
+    def config_entry(self):
+        """Return the config entry."""
+        return self._config_entry
+
     def __init__(self, config_entry):
         """Initialize options flow."""
-        self.config_entry = config_entry
+        self._config_entry = config_entry
         self.options = dict(config_entry.options)
 
     async def async_step_init(self, user_input=None) -> FlowResult:
