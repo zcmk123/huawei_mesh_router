@@ -100,7 +100,7 @@ class HuaweiControllerConfigFlow(ConfigFlow, domain=DOMAIN):
                 user=user_input[CONF_USERNAME],
                 password=user_input[CONF_PASSWORD],
                 verify_ssl=user_input[CONF_VERIFY_SSL],
-                config=user_input
+                config={"data": user_input}
             )
             try:
                 await api.authenticate()
