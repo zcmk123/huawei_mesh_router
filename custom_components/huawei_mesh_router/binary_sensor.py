@@ -79,9 +79,7 @@ async def async_setup_entry(
             HuaweiWanSensorEntityDescription(
                 key="wan",
                 icon="mdi:web",
-                name=generate_entity_name(
-                    _FUNCTION_DISPLAYED_NAME_WAN, coordinator.primary_router_name
-                ),
+                name=None,
                 device_mac=None,
                 device_name=None,
                 function_uid=_FUNCTION_UID_WAN,
@@ -100,6 +98,7 @@ class HuaweiBinarySensor(
     CoordinatorEntity[HuaweiDataUpdateCoordinator], BinarySensorEntity
 ):
     entity_description: HuaweiBinarySensorEntityDescription
+    _attr_has_entity_name: bool = True
 
     def __init__(
         self,
@@ -137,6 +136,7 @@ class HuaweiBinarySensor(
 # ---------------------------
 class HuaweiWanBinarySensor(HuaweiBinarySensor):
     entity_description: HuaweiBinarySensorEntityDescription
+    _attr_translation_key: str | None = "internet_connection"
 
     def __init__(
         self,

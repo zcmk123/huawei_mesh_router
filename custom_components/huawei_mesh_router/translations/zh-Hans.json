@@ -134,5 +134,28 @@
                 "open": "开放"
             }
         }
+    },
+    "entity": {
+        "binary_sensor": {
+            "internet_connection": {
+                "name": "互联网连接状态"
+            }
+        },
+        "sensor": {
+            "uptime": {
+                "name": "运行时间"
+            },
+            "connected_devices": {
+                "name": "已连接设备数量"
+            },
+            "total_connected_devices": {
+                "name": "总连接设备数量"
+            }
+        },
+        "switch": {
+            "guest_network": {
+                "name": "访客网络"
+            }
+        }
     }
 }
