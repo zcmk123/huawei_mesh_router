@@ -5,6 +5,10 @@ from typing import Any, Final, Iterable, Tuple
 
 from aiohttp import ClientResponse
 
+from homeassistant.const import (
+    CONF_HOST,
+)
+
 from .classes import (
     MAC_ADDR,
     Action,
@@ -89,10 +93,12 @@ class HuaweiApi:
         user: str,
         password: str,
         verify_ssl: bool,
+        config: dict[str, Any],
     ) -> None:
         """Initialize."""
         self._core_api = HuaweiCoreApi(host, port, use_ssl, user, password, verify_ssl)
         self._is_features_updated = False
+        self._host = host
         self._logger = logging.getLogger(f"{__name__} ({host})")
         self._features = HuaweiFeaturesDetector(self._core_api, self._logger)
         self._logger.debug("New instance of HuaweiApi created")
@@ -144,8 +150,17 @@ class HuaweiApi:
 
     async def get_router_info(self) -> HuaweiRouterInfo:
         """Return the router information."""
+
+        # get config host
+        config_host = self._config.data.get(CONF_HOST)
+
+        if self._host != config_host:
+            self._logger.debug("Device is repeater, using onlinestate for router info")
+            return await self._get_router_info_from_onlinestate()
+
         data = await self._core_api.get(
-            URL_DEVICE_INFO, check_authorized=HuaweiApi._router_data_check_authorized
+            URL_DEVICE_INFO,
+            check_authorized=HuaweiApi._router_data_check_authorized,
         )
 
         return HuaweiRouterInfo(
@@ -157,6 +172,22 @@ class HuaweiApi:
             harmony_os_version=data.get("HarmonyOSVersion"),
             uptime=data.get("UpTime"),
         )
+
+    async def _get_router_info_from_onlinestate(self) -> HuaweiRouterInfo:
+        """Return the router information from onlinestate."""
+        data = await self._core_api.get(URL_ONLINE_STATE)
+        for item in data:
+            if item.get("IpAddress") == self._host:
+                return HuaweiRouterInfo(
+                    name=item.get("DeviceName"),
+                    model=item.get("custinfo", {}).get("CustDeviceName", ""),
+                    serial_number=item.get("SN"),
+                    software_version=item.get("CurrentVersion"),
+                    hardware_version="",
+                    harmony_os_version="",
+                    uptime=0,
+                )
+        raise UnsupportedActionError("Can not find device in onlinestate")
 
     async def get_wan_connection_info(self) -> HuaweiConnectionInfo:
         data = await self._core_api.get(

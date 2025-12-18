@@ -667,6 +667,7 @@ class HuaweiDataUpdateCoordinator(DataUpdateCoordinator):
                     user=self._config.data[CONF_USERNAME],
                     password=self._config.data[CONF_PASSWORD],
                     verify_ssl=False,
+                    config=self._config,
                 )
                 self._apis[device_mac] = router_api
 
