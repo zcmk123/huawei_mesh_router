@@ -629,13 +629,14 @@ class HuaweiWlanFilterSwitch(HuaweiSwitch):
 #   HuaweiGuestNetworkSwitch
 # ---------------------------
 class HuaweiGuestNetworkSwitch(HuaweiSwitch):
+    _attr_has_entity_name: bool = True
+    _attr_translation_key: str | None = "guest_network"
+    
     def __init__(self, coordinator: HuaweiDataUpdateCoordinator) -> None:
         """Initialize."""
         super().__init__(coordinator, Switch.GUEST_NETWORK, None)
 
-        self._attr_name = generate_entity_name(
-            _FUNCTION_DISPLAYED_NAME_GUEST_NETWORK, coordinator.primary_router_name
-        )
+        self._attr_name = None
         self._attr_unique_id = generate_entity_unique_id(
             coordinator, _FUNCTION_ID_GUEST_NETWORK
         )
