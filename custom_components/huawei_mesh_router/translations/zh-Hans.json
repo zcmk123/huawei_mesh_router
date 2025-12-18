@@ -149,7 +149,8 @@
                 "name": "已连接设备数量"
             },
             "total_connected_devices": {
-                "name": "总连接设备数量"
+                "name": "总客户端数量",
+                "unit_of_measurement": "个"
             }
         },
         "switch": {
