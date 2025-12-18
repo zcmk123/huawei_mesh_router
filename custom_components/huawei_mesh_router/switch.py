@@ -452,6 +452,8 @@ def watch_for_time_control_items(coordinator, config_entry, async_add_entities):
 #   HuaweiSwitch
 # ---------------------------
 class HuaweiSwitch(CoordinatorEntity[HuaweiDataUpdateCoordinator], SwitchEntity, ABC):
+    _attr_has_entity_name: bool = True
+
     def __init__(
         self,
         coordinator: HuaweiDataUpdateCoordinator,
@@ -629,14 +631,12 @@ class HuaweiWlanFilterSwitch(HuaweiSwitch):
 #   HuaweiGuestNetworkSwitch
 # ---------------------------
 class HuaweiGuestNetworkSwitch(HuaweiSwitch):
-    _attr_has_entity_name: bool = True
     _attr_translation_key: str | None = "guest_network"
     
     def __init__(self, coordinator: HuaweiDataUpdateCoordinator) -> None:
         """Initialize."""
         super().__init__(coordinator, Switch.GUEST_NETWORK, None)
 
-        self._attr_name = None
         self._attr_unique_id = generate_entity_unique_id(
             coordinator, _FUNCTION_ID_GUEST_NETWORK
         )

@@ -134,5 +134,29 @@
                 "open": "Open"
             }
         }
+    },
+    "entity": {
+        "binary_sensor": {
+            "internet_connection": {
+                "name": "Internet connection status"
+            }
+        },
+        "sensor": {
+            "uptime": {
+                "name": "Uptime"
+            },
+            "connected_devices": {
+                "name": "Connected devices"
+            },
+            "total_connected_devices": {
+                "name": "Total clients",
+                "unit_of_measurement": "clients"
+            }
+        },
+        "switch": {
+            "guest_network": {
+                "name": "Guest network"
+            }
+        }
     }
 }
