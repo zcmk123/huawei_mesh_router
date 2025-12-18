@@ -35,6 +35,7 @@ from .const import (
     URL_DEVICE_TOPOLOGY,
     URL_GUEST_NETWORK,
     URL_HOST_INFO,
+    URL_ONLINE_STATE,
     URL_PORT_MAPPING,
     URL_REBOOT,
     URL_REPEATER_INFO,
@@ -102,6 +103,7 @@ class HuaweiApi:
         self._logger = logging.getLogger(f"{__name__} ({host})")
         self._features = HuaweiFeaturesDetector(self._core_api, self._logger)
         self._logger.debug("New instance of HuaweiApi created")
+        self._config = config
 
     async def authenticate(self) -> None:
         """Perform authentication."""
@@ -152,7 +154,7 @@ class HuaweiApi:
         """Return the router information."""
 
         # get config host
-        config_host = self._config.data.get(CONF_HOST)
+        config_host = self._config.data[CONF_HOST]
 
         if self._host != config_host:
             self._logger.debug("Device is repeater, using onlinestate for router info")

@@ -334,6 +334,7 @@ class HuaweiDataUpdateCoordinator(DataUpdateCoordinator):
                 user=config_entry.data[CONF_USERNAME],
                 password=config_entry.data[CONF_PASSWORD],
                 verify_ssl=config_entry.data[CONF_VERIFY_SSL],
+                config=config_entry.data,
             )
         }
         self._router_infos: dict[MAC_ADDR, HuaweiRouterInfo] = {}
