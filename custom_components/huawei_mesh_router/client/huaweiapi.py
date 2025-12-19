@@ -97,7 +97,7 @@ class HuaweiApi:
         config: dict[str, Any],
     ) -> None:
         """Initialize."""
-        self._core_api = HuaweiCoreApi(host, port, use_ssl, user, password, verify_ssl)
+        self._core_api = HuaweiCoreApi(config.data[CONF_HOST], port, use_ssl, user, password, verify_ssl)
         self._is_features_updated = False
         self._host = host
         self._logger = logging.getLogger(f"{__name__} ({host})")

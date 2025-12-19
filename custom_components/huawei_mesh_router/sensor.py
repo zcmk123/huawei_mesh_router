@@ -81,7 +81,7 @@ class HuaweiUptimeSensorEntityDescription(HuaweiSensorEntityDescription):
 class HuaweiClientsSensorEntityDescription(HuaweiSensorEntityDescription):
     """A class that describes clients count sensor entities."""
 
-    native_unit_of_measurement: str | None = UNITS_CLIENTS
+    # native_unit_of_measurement: str | None = UNITS_CLIENTS
     state_class: SensorStateClass | str | None = SensorStateClass.MEASUREMENT
     entity_category: EntityCategory | None = EntityCategory.DIAGNOSTIC
 
