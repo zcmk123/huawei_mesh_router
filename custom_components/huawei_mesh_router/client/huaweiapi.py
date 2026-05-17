@@ -177,19 +177,53 @@ class HuaweiApi:
 
     async def _get_router_info_from_onlinestate(self) -> HuaweiRouterInfo:
         """Return the router information from onlinestate."""
-        data = await self._core_api.get(URL_ONLINE_STATE)
-        for item in data:
+        from datetime import datetime
+        
+        # First, get basic info from onlinestate
+        onlinestate_data = await self._core_api.get(URL_ONLINE_STATE)
+        host_info_data = await self._core_api.get(URL_HOST_INFO)
+        router_info_item = None
+        for item in onlinestate_data:
             if item.get("IpAddress") == self._host:
-                return HuaweiRouterInfo(
-                    name=item.get("DeviceName"),
-                    model=item.get("custinfo", {}).get("CustDeviceName", ""),
-                    serial_number=item.get("SN"),
-                    software_version=item.get("CurrentVersion"),
-                    hardware_version="",
-                    harmony_os_version="",
-                    uptime=0,
-                )
-        raise UnsupportedActionError("Can not find device in onlinestate")
+                router_info_item = item
+                break
+        
+        if not router_info_item:
+            raise UnsupportedActionError("Can not find device in onlinestate")
+        
+        # Try to get AccessRecord from HostInfo to calculate uptime
+        uptime = 0
+        try:
+            for device in host_info_data:
+                if device.get("IPAddress") == self._host and device.get("AccessRecord"):
+                    access_record = device.get("AccessRecord", "")
+                    # AccessRecord format: "2026-05-16 14:38:04#1#1"
+                    access_time_str = access_record.split("#")[0]
+                    access_time = datetime.strptime(access_time_str, "%Y-%m-%d %H:%M:%S")
+                    current_time = datetime.now()
+                    uptime = int((current_time - access_time).total_seconds())
+                    self._logger.debug(
+                        "Router %s uptime calculated from AccessRecord: %s seconds",
+                        self._host,
+                        uptime
+                    )
+                    break
+        except Exception as ex:
+            self._logger.debug(
+                "Failed to calculate uptime from AccessRecord for %s: %s",
+                self._host,
+                str(ex)
+            )
+        
+        return HuaweiRouterInfo(
+            name=router_info_item.get("DeviceName"),
+            model=router_info_item.get("custinfo", {}).get("CustDeviceName", ""),
+            serial_number=router_info_item.get("SN"),
+            software_version=router_info_item.get("CurrentVersion"),
+            hardware_version="",
+            harmony_os_version="",
+            uptime=uptime,
+        )
 
     async def get_wan_connection_info(self) -> HuaweiConnectionInfo:
         data = await self._core_api.get(
