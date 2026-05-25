@@ -154,3 +154,7 @@ cython_debug/
 #.idea/
 
 desktop.ini
+
+.trae/
+.claude/
+CLAUDE.md
